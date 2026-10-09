@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: travel_booking
+      POSTGRES_USER: travel_app
+      POSTGRES_PASSWORD: local_learning_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../application/database/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U travel_app -d travel_booking"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [data]
+
+  backend:
+    build:
+      context: ..
+      dockerfile: application/backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://travel_app:local_learning_password@db:5432/travel_booking
+    ports: ["8000:8000"]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks: [app, data]
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: application/frontend/Dockerfile
+    ports: ["8080:80"]
+    depends_on: [backend]
+    networks: [app]
+
+volumes:
+  postgres_data:
+networks:
+  app:
+  data:
+    internal: true

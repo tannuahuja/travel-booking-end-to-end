@@ -1,0 +1,6 @@
+apiVersion: v2
+name: travel-booking
+description: Learning chart for the Travel Booking Platform
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

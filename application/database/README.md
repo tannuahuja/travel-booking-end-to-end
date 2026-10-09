@@ -1,0 +1,1 @@
+The PostgreSQL image runs `init.sql` only when its data directory is first initialized. Editing this file does not migrate an existing volume. We will add versioned schema migrations later. The Compose password is local-only.
