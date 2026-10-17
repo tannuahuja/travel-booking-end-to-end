@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Travel Booking</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header><span class="brand">✈ Travelly</span><nav><a href="#trips">Explore</a><a href="#booking">Book a trip</a></nav></header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">YOUR NEXT ADVENTURE STARTS HERE</p>
+      <h1>Find your next<br><span>great escape.</span></h1>
+      <p>Discover beautiful places and book your next journey in a few clicks.</p>
+      <a class="button" href="#trips">Explore destinations</a>
+    </section>
+    <section id="trips"><h2>Featured destinations</h2><p class="muted">Trips are loaded from the Express API.</p><div id="trip-list" class="cards">Loading trips…</div></section>
+    <section id="booking" class="booking">
+      <h2>Book your trip</h2>
+      <form id="booking-form">
+        <label>Trip<select id="tripId" required></select></label>
+        <label>Your name<input id="customerName" required maxlength="100"></label>
+        <label>Email<input id="customerEmail" type="email" required maxlength="254"></label>
+        <button class="button" type="submit">Create booking</button>
+      </form>
+      <p id="message" role="status"></p>
+    </section>
+  </main>
+  <footer>Travelly · Demo project for DevSecOps learning</footer>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+aws_region         = "us-east-1"
+frontend_repository = "travel-booking-frontend-prod"
+backend_repository  = "travel-booking-backend-prod"

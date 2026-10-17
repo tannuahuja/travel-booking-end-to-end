@@ -1,0 +1,46 @@
+name: CI
+on:
+  push:
+    branches: [main, develop, "feature/**"]
+  pull_request:
+    branches: [main, develop]
+permissions:
+  contents: read
+  security-events: write
+jobs:
+  test-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        working-directory: app
+        run: npm install
+      - name: Lint
+        working-directory: app
+        run: npm run lint
+      - name: Unit tests
+        working-directory: app
+        run: npm test
+      - name: Dependency audit
+        working-directory: app
+        run: npm audit --audit-level=high
+      - name: Install Checkov
+        run: pipx install checkov
+      - name: Checkov IaC scan
+        run: checkov -d terraform --quiet
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update && sudo apt-get install -y trivy
+      - name: Trivy filesystem scan
+        run: trivy fs --scanners vuln,misconfig,secret --severity HIGH,CRITICAL .
+      - name: Build Docker image
+        run: docker build -f docker/Dockerfile -t travel-booking:${{ github.sha }} .
+      - name: Trivy image scan
+        run: trivy image --severity HIGH,CRITICAL travel-booking:${{ github.sha }}
