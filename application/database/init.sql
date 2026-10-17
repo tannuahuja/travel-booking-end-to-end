@@ -1,7 +1,0 @@
-CREATE TABLE IF NOT EXISTS bookings (
-    id BIGSERIAL PRIMARY KEY,
-    customer_name VARCHAR(100) NOT NULL,
-    destination VARCHAR(100) NOT NULL,
-    seats INTEGER NOT NULL CHECK (seats BETWEEN 1 AND 8),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
